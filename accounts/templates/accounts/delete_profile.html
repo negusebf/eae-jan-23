@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load bootstrap4 %}
+{% load static %}
+
+{% block title %}
+  Delete User
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h3>Delete User Profile</h3>
+        <br>
+        {% if result %}
+            <link rel="stylesheet" type="text/css" href="{% static '/css_taken_from_django_core_admin/css/base.css' %}">
+            <ul class="messagelist"><li class="error">{{ result }}</li></ul>
+            <a href="{% url 'home' %}" class='button btn newsbox-btn m-2'>Return to home</a>
+        {% endif %}
+        {% if err_result %}
+            <link rel="stylesheet" type="text/css" href="{% static '/css_taken_from_django_core_admin/css/base.css' %}">
+            <ul class="messagelist"><li class="error">{{ err_result }}</li></ul>
+            <a href="{% url 'home' %}" class='button btn newsbox-btn m-2'>Return to home</a>
+        {% endif %}
+        <form method="POST">
+            {% csrf_token %}
+            <p>Inorder to delete your account, please type your Username and Password first!</p>
+            {% for field in form %}
+                {{ field.label }}
+                {{ field }}
+                <br>
+            {% endfor %}
+            {% if not result %}
+                {% if not err_result %}
+                    <input type="submit" value="Delete Account" class="btn btn-danger">
+                {% endif %}
+            {% endif %}
+        </form>
+    </div>
+{% endblock %}

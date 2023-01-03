@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load bootstrap4 %}
+{% load static %}
+
+{% block title %}
+  Login
+{% endblock %}
+
+{%block reserved_menu_item%}
+	<a href="{% url 'accounts:signup' %}">Register</a>
+{% endblock %}
+
+
+{% block content %}
+<div class="container">
+    <h1>Login</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <a class="btn" href="{% url 'accounts:password_reset' %}"><font size='1.5' color='AF2500'>Forgot your password</font></a>
+        <br>
+        <input type="submit" value="Login" class="btn newsbox-btn btn-3 m-2">
+    </form>
+    <br>
+    <p>Don't have an account, <a href="{% url 'accounts:signup' %}">Sign up</a> here!</p>
+</div>
+{% endblock %}

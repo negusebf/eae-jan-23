@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load ads_tags %}
+
+{% block title %}
+  Resources and Contents
+{% endblock %}
+
+
+{% block content %}
+
+    <!-- ##### Catagory Featured Area Start ##### -->
+    {% if cover_page %}
+        {% for cover in cover_page %}
+            <div class="catagory-featured-post bg-overlay clearfix" style="background-image: url({{ cover.top_cover_image.url  }})">
+                <div class="container-fluid h-100">
+                    <div class="row h-100 align-items-center">
+                        <div class="col-12 col-lg-9">
+                            <!-- Post Content -->
+                            <div class="post-content">
+                                <!--<p class="tag"><span>Entertainment</span></p>-->
+                                <a class="post-title">{{ cover.title }}</a>
+                                <br>
+                                <p>{{ cover.text }}</p>
+                                <span class="post-date">{{ cover.created_at | date }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+    <!-- ##### Catagory Featured Area End ##### -->
+
+
+
+
+	<!-- ##### News Area Start ##### -->
+    <div class="news-area section-padding-100-70">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-md-8 col-lg-8">
+                    <!-- Single News Area -->
+                    <div class="single-blog-post d-flex flex-wrap style-5 mb-30">
+                        <!-- Blog Thumbnail -->
+                        {% if cover_page %}
+                            {% for cover in cover_page %}
+                                <div class="blog-thumbnail">
+                                    <a href="{% url 'posts:videos' %}"><img src="{{ cover.video_tag_image.url }}" alt=""></a>
+                                </div>
+                                <!-- Blog Content -->
+                                <div class="blog-content">
+                                    <a href="{% url 'posts:videos' %}" class="post-title">{{ cover.video_tag_title }}</a>
+                                    <p>{{ cover.video_tag_text }}</p>
+                                    <span class="post-date">Updated on {{ cover.created_at }}</span>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                        <h1><a href="{% url 'posts:videos' %}" class="btn newsbox-btn m-2">Videos</a></h1>
+                    </div>
+                    <hr>
+
+                    <!-- Single News Area -->
+                    <div class="single-blog-post d-flex flex-wrap style-5 mb-30">
+                        <!-- Blog Thumbnail -->
+                        {% if cover_page %}
+                            {% for cover in cover_page %}
+                                <div class="blog-thumbnail">
+                                    <a href="{% url 'blogs:post_list' %}"><img src="{{ cover.blog_article_tag_image.url }}" alt=""></a>
+                                </div>
+                                <!-- Blog Content -->
+                                <div class="blog-content">
+                                    <a href="{% url 'blogs:post_list' %}" class="post-title">{{ cover.blog_article_tag_title }}</a>
+                                    <p>{{ cover.blog_article_tag_text }}</p>
+                                    <span class="post-date">Updated on {{ cover.created_at }}</span>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                        <h1><a href="{% url 'blogs:post_list' %}" class="btn newsbox-btn m-2">Blogs and Articles</a></h1>
+                    </div>
+                    <hr>
+
+                </div>
+                <!-- Sidebar Widget -->
+                <div class="col-12 col-sm-9 col-md-6 col-lg-4">
+                    {% include 'visits/sidebar.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ##### News Area End ##### -->
+
+
+{% endblock %}

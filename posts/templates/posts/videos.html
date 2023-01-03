@@ -1,0 +1,414 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+  Video Contents
+{% endblock %}
+
+
+{% block content %}
+
+    <!-- MODAL
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Would you like to view it in Youtube or not</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <center>
+                        <a href="https://www.youtube.com" class="btn btn-primary">View from Youtube</a>
+                    </center>
+                </div>
+            </div>
+        </div>
+    </div>
+    END MODAL -->    
+
+
+
+
+    <section class="intro-news-area section-padding-90-0 mb-70">
+        <div class="container">
+            <div class="row">
+                <!-- Intro News Tabs Area -->
+                <div class="col-12 col-lg-8">
+                    <br>
+                    <form action="{% url 'posts:video_search' %}" method="POST">
+                        {% csrf_token %}
+                        <table border="0" class="col-12">
+                            <tr>
+                                <td>
+                                    <input type="text" name="search" class="form-control col-12 col-lg-12" placeholder="Search selected source by keyword..." value="" required>
+                                </td>
+                                <td>
+                                    <select name="video_type" class="form-control col-12 col-lg-10" required>
+                                        <option value="">Select source</option>
+                                        <option value="">-----------</option>
+                                        <option value="linked">Linked Videos</option>
+                                        <option value="local">Local Videos</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="submit" value="Search" class="btn btn-primary col-12 col-lg-9">
+                                <td>
+                            </tr>
+                        </table>
+                    </form>
+                    <br>
+                    <br>
+                    <div class="intro-news-tab">
+                        <!-- Intro News Filter -->
+                        <div class="intro-news-filter d-flex justify-content-between">
+                            {% if cat_loc_vid or cat_lin_vid %}
+                                <h6>Selected Category Videos</font></h6>
+                                    <nav>
+                                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                            <a class="nav-item nav-link active" href="{% url 'posts:videos' %}">Home</a>
+                                        </div>
+                                    </nav>
+                            {% else %}
+                                {% if linked_paged_search_listing or linked_paged_search_listing %}
+                                    <h6>Search: <font color="blue">{{ found }} result/s found</font></h6>
+                                    <nav>
+                                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                            <a class="nav-item nav-link active" href="{% url 'posts:videos' %}">Home</a>
+                                        </div>
+                                    </nav>
+                                {% elif flag %}
+                                <h6>Search: <font color="blue">{{ found }} result/s found</font></h6>
+                                    <nav>
+                                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                            <a class="nav-item nav-link active" href="{% url 'posts:videos' %}">Home</a>
+                                        </div>
+                                    </nav>
+                                {% else %}
+                                    <h5>Video Source</h5>
+                                    <nav>
+                                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                            <a class="nav-item nav-link active" id="nav1" data-toggle="tab" href="#nav-1" role="tab" aria-controls="nav-1" aria-selected="true">Linked Videos</a>
+                                            <a class="nav-item nav-link" id="nav2" data-toggle="tab" href="#nav-2" role="tab" aria-controls="nav-2" aria-selected="false">Local Videos</a>
+                                        </div>
+                                    </nav>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                        <br>
+                        <div class="tab-content" id="nav-tabContent">
+                            <!-- Single News Area -->
+                            {% if linked_paged_search_listing %}
+                                <div class="tab-pane fade show active" id="nav-1" role="tabpanel" aria-labelledby="nav1">
+                                    <div class="row">
+                                        {% for list in linked_paged_search_listing %}
+                                            <div class="col-12 col-sm-6 col-lg-4">
+                                                <div class="single-blog-post style-2 mb-5">
+                                                    <!-- Blog Thumbnail -->
+                                                    <div class="blog-thumbnail">
+                                                        <a href="{% url 'posts:linked_video_player' list.id %}"><img src="{{ list.image.url }}" alt="">
+                                                    </div>
+                                                    <!-- Blog Content -->
+                                                    <div class="blog-content">
+                                                        <span class="post-date">{{ list.published_date|date:"F j, Y" }}</span>
+                                                        <a href="{% url 'posts:linked_video_player' list.id %}" class="post-title">{{ list.title }}</a>
+                                                        <a href="{% url 'posts:linked_video_player' list.id %}" class="post-author">By {{ list.author }}</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <!-- Linked search result paginator -->
+                                    <!--
+                                    <div class="pagination">
+                                        <span class="step-links">
+                                            {% if linked_paged_search_listing.has_previous %}
+                                                <span class="current">
+                                                  Page {{ linked_paged_search_listing.number }} of {{ linked_paged_search_listing.paginator.num_pages }}:
+                                                </span>
+                                                <a href="?page=1" class="btn btn-primary btn-sm">&laquo; First</a>
+                                                <a href="?page={{ linked_paged_search_listing.previous_page_number }}" class="btn btn-primary btn-sm">Previous</a>
+                                            {% endif %}
+                                            {% if linked_paged_search_listing.has_next %}
+                                                <span class="current">
+                                                    Page {{ linked_paged_search_listing.number }} of {{ linked_paged_search_listing.paginator.num_pages }}:
+                                                </span>
+                                                <a href="?page={{ linked_paged_search_listing.next_page_number }}" class="btn btn-primary btn-sm">Next </a>
+                                                <a href="?page={{ linked_paged_search_listing.paginator.num_pages }}" class="btn btn-primary btn-sm">Last &raquo;</a>
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                    -->
+                                </div>
+                            {% elif not linked_paged_search_listing %}
+                                <div class="tab-pane fade show active" id="nav-1" role="tabpanel" aria-labelledby="nav1">
+                                    <div class="row">
+                                        {% if linked_video_listings %}
+                                            {% for list in linked_video_listings %}
+                                                <div class="col-12 col-sm-6 col-lg-4">
+                                                    <div class="single-blog-post style-2 mb-5">
+
+
+                                                        
+
+                                                        <!-- Blog Thumbnail -->
+                                                        <div class="blog-thumbnail">
+                                                            <a href="{% url 'posts:linked_video_player' list.id %}"><img src="{{ list.image.url }}" alt=""></a>
+                                                        </div>
+
+                                                        <!-- Blog Content -->
+                                                        <div class="blog-content">
+                                                            <span class="post-date">{{ list.published_date|date:"F j, Y" }}</span>
+                                                            <a href="{% url 'posts:linked_video_player' list.id %}" class="post-title">{{ list.title }}</a>
+                                                            <a href="{% url 'posts:linked_video_player' list.id %}" class="post-author">By {{ list.author }}</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                    <!-- Linked videos paginator -->
+                                    <div class="pagination">
+                                        <span class="step-links">
+                                            {% if linked_video_listings.has_previous %}
+                                                <span class="current">
+                                                  Page {{ linked_video_listings.number }} of {{ linked_video_listings.paginator.num_pages }}:
+                                                </span>
+                                                <a href="?page=1" class="btn btn-primary btn-sm">&laquo; First</a>
+                                                <a href="?page={{ linked_video_listings.previous_page_number }}" class="btn btn-primary btn-sm">Previous</a>
+                                            {% endif %}
+                                            {% if linked_video_listings.has_next %}
+                                                <span class="current">
+                                                    Page {{ linked_video_listings.number }} of {{ linked_video_listings.paginator.num_pages }}:
+                                                </span>
+                                                <a href="?page={{ linked_video_listings.next_page_number }}" class="btn btn-primary btn-sm">Next </a>
+                                                <a href="?page={{ linked_video_listings.paginator.num_pages }}" class="btn btn-primary btn-sm">Last &raquo;</a>
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            {% if cat_lin_vid %}
+                                <div class="tab-pane fade show active">
+                                    <div class="row">
+                                        {% for list in cat_lin_vid %}
+                                            <div class="col-12 col-sm-6 col-lg-4">
+                                                <div class="single-blog-post style-2 mb-5">
+                                                    <!-- Blog Thumbnail -->
+                                                    <div class="blog-thumbnail">
+                                                        <a href="{% url 'posts:linked_video_player' list.id %}"><img src="{{ list.image.url }}" alt=""></a>
+                                                    </div>
+
+                                                    <!-- Blog Content -->
+                                                    <div class="blog-content">
+                                                        <span class="post-date">{{ list.published_date|date:"F j, Y" }}</span>
+                                                        <a href="{% url 'posts:linked_video_player' list.id %}" class="post-title">{{ list.title }}</a>
+                                                        <a href="{% url 'posts:linked_video_player' list.id %}" class="post-author">By {{ list.author }}</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="pagination">
+                                      <span class="step-links">
+                                        <span class="current">
+                                          Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}: 
+                                        </span>
+                                        {% if page_obj.has_previous %}
+                                          <a href="?page=1" class="btn btn-primary btn-sm">&laquo; First</a> 
+                                          <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-primary btn-sm">Previous</a>
+                                        {% endif %}
+                                        {% if page_obj.has_next %}
+                                          <a href="?page={{ page_obj.next_page_number }}" class="btn btn-primary btn-sm">Next </a> 
+                                          <a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-primary btn-sm">Last &raquo;</a>
+                                        {% endif %}
+                                      </span>
+                                    </div>
+                                </div>
+                            {% elif cat_loc_vid %}
+                                <div class="tab-pane fade show active">
+                                    <div class="row">
+                                        {% for list in cat_loc_vid %}
+                                            <div class="col-12 col-sm-6 col-lg-4">
+                                                <div class="single-blog-post style-2 mb-5">
+                                                    <!-- Blog Thumbnail -->
+                                                    <div class="blog-thumbnail">
+                                                        <a href="{% url 'posts:local_video_player' list.id %}"><img src="{{ list.image.url }}" alt=""></a>
+                                                    </div>
+
+                                                    <!-- Blog Content -->
+                                                    <div class="blog-content">
+                                                        <span class="post-date">{{ list.published_date|date:"F j, Y" }}</span>
+                                                        <a href="{% url 'posts:local_video_player' list.id %}" class="post-title">{{ list.title }}</a>
+                                                        <a href="{% url 'posts:local_video_player' list.id %}" class="post-author">By {{ list.author }}</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="pagination">
+                                      <span class="step-links">
+                                        <span class="current">
+                                          Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}: 
+                                        </span>
+                                        {% if page_obj.has_previous %}
+                                          <a href="?page=1" class="btn btn-primary btn-sm">&laquo; First</a> 
+                                          <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-primary btn-sm">Previous</a>
+                                        {% endif %}
+                                        {% if page_obj.has_next %}
+                                          <a href="?page={{ page_obj.next_page_number }}" class="btn btn-primary btn-sm">Next </a> 
+                                          <a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-primary btn-sm">Last &raquo;</a>
+                                        {% endif %}
+                                      </span>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+
+
+
+
+
+                            <!-- Single News Area -->
+                            {% if local_paged_search_listing %}
+                                <div class="tab-pane fade show active" id="nav-2" role="tabpanel" aria-labelledby="nav2">
+                                    <div class="row">
+                                        {% for list in local_paged_search_listing %}
+                                            <div class="col-12 col-sm-6 col-lg-4">
+                                                <div class="single-blog-post style-2 mb-5">
+                                                    <!-- Blog Thumbnail -->
+                                                    <div class="blog-thumbnail">
+                                                        <a href="{% url 'posts:local_video_player' list.id %}"><img src="{{ list.image.url }}" alt="">
+                                                    </div>
+                                                    <!-- Blog Content -->
+                                                    <div class="blog-content">
+                                                        <span class="post-date">{{ list.published_date|date:"F j, Y" }}</span>
+                                                        <a href="{% url 'posts:local_video_player' list.id %}" class="post-title">{{ list.title }}</a>
+                                                        <a href="{% url 'posts:local_video_player' list.id %}" class="post-author">By {{ list.author }}</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <!-- Linked search result paginator -->
+                                    <!--
+                                    <div class="pagination">
+                                        <span class="step-links">
+                                            {% if local_paged_search_listing.has_previous %}
+                                                <span class="current">
+                                                  Page {{ local_paged_search_listing.number }} of {{ local_paged_search_listing.paginator.num_pages }}:
+                                                </span>
+                                                <a href="?page=1" class="btn btn-primary btn-sm">&laquo; First</a>
+                                                <a href="?page={{ local_paged_search_listing.previous_page_number }}" class="btn btn-primary btn-sm">Previous</a>
+                                            {% endif %}
+                                            {% if local_paged_search_listing.has_next %}
+                                                <span class="current">
+                                                    Page {{ local_paged_search_listing.number }} of {{ local_paged_search_listing.paginator.num_pages }}:
+                                                </span>
+                                                <a href="?page={{ local_paged_search_listing.next_page_number }}" class="btn btn-primary btn-sm">Next </a> 
+                                                <a href="?page={{ local_paged_search_listing.paginator.num_pages }}" class="btn btn-primary btn-sm">Last &raquo;</a>
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                    -->
+                                </div>
+
+                            {% elif not local_paged_search_listing %}
+
+                                <div class="tab-pane fade show" id="nav-2" role="tabpanel" aria-labelledby="nav2">
+                                    <div class="row">
+                                        {% if local_video_listings %}
+                                            {% for list in local_video_listings %}
+                                                <div class="col-12 col-sm-6 col-lg-4">
+                                                    <div class="single-blog-post style-2 mb-5">
+                                                        <!-- Blog Thumbnail -->
+                                                        <div class="blog-thumbnail">
+                                                            <a href="{% url 'posts:local_video_player' list.id %}"><img src="{{ list.image.url }}" alt="">
+                                                        </div>
+
+                                                        <!-- Blog Content -->
+                                                        <div class="blog-content">
+                                                            <span class="post-date">{{ list.published_date|date:"F j, Y" }}</span>
+                                                            <a href="{% url 'posts:local_video_player' list.id %}" class="post-title">{{ list.title }}</a>
+                                                            <a href="{% url 'posts:local_video_player' list.id %}" class="post-author">By {{ list.author }}</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            <div class="col-12"><p><font color="red">Opps, no videos found!</font></p></div>
+                                        {% endif %}
+                                    </div>
+                                    <!-- Linked videos paginator -->
+                                    <div class="pagination">
+                                        <span class="step-links">
+                                            {% if local_video_listings.has_previous %}
+                                                <span class="current">
+                                                  Page {{ local_video_listings.number }} of {{ local_video_listings.paginator.num_pages }}:
+                                                </span>
+                                                <a href="?page=1" class="btn btn-primary btn-sm">&laquo; First</a>
+                                                <a href="?page={{ local_video_listings.previous_page_number }}" class="btn btn-primary btn-sm">Previous</a>
+                                            {% endif %}
+                                            {% if local_video_listings.has_next %}
+                                                <span class="current">
+                                                    Page {{ local_video_listings.number }} of {{ local_video_listings.paginator.num_pages }}:
+                                                </span>
+                                                <a href="?page={{ local_video_listings.next_page_number }}" class="btn btn-primary btn-sm">Next </a>
+                                                <a href="?page={{ local_video_listings.paginator.num_pages }}" class="btn btn-primary btn-sm">Last &raquo;</a>
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <!-- Sidebar Widget -->
+                <div class="col-12 col-sm-9 col-md-6 col-lg-4">
+                    <!-- Add Widget -->
+                    <div class="single-widget-area add-widget mb-30">
+                        {% if side_ad %}
+                            {% for i in side_ad %}
+                                <a href="{{ i.ad_link }}">
+                                    <img src="{{ i.ad.url }}" alt="">
+                                </a>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    {% include 'visits/sidebar.html' %}
+                    
+                    <!-- ##### Add Area End ##### -->
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ##### Intro News Area End ##### -->
+
+    <!-- ##### Add Area Start ##### -->
+    <div class="big-add-area mb-100">
+        <div class="container-fluid">
+            {% if bottom_ad %}
+                {% for i in bottom_ad %}
+                    <a href="{{ i.ad_link }}">
+                        <img src="{{ i.ad.url }}" alt="">
+                    </a>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    <!-- ##### Add Area End ##### -->
+
+
+    <!-- plugins -->
+    <script src="{% static 'js/vendors.js' %}"></script>
+
+    <!-- custom app -->
+    <script src="{% static 'js/app.js' %}"></script>
+
+
+
+{% endblock %}

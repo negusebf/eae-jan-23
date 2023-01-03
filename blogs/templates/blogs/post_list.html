@@ -1,0 +1,337 @@
+{% extends "blogs/blog_base.html" %}
+{% load static %}
+
+{% block title %}
+  Blogs
+{% endblock %}
+
+
+
+
+
+
+{% block pregroup %}
+  <br>
+  <br>
+  <br>
+  <div class="col-md-5">
+  	<div class="content">
+
+  			<h2>Blogs</h2>
+        {% if user.is_authenticated %}
+          <p>Welcome to the Blogging page <b>{{ user.first_name }}</b>. 
+            <br>
+            <br>
+            Here you can choose blog posts of your interest, or you can also post your own blogs. Our blogging app is free of charge. Based on our policies, frequent bloggers will be rewarded on some download contents from our local store free of charge. <br>If you like our blogging app, please take a moment on writing us a feedback on the <a href="{% url 'contact' %}">contacts</a> page.</p>
+        {% else %}
+          <a href="{% url 'accounts:login' %}" target="_blank">Login</a> to get full access on our archives!</p>
+        {% endif %}
+  	</div>
+    <br>
+  	<a href="{% url 'blogs:post_new' %}" class="btn btn-md btn-fill btn-warning"><span class="glyphicon glyphicon-plus-sign"></span> Create New Blog</a>
+    <br>
+    <hr>
+    {% if user.is_authenticated %}
+      <p><b> You</b></p>
+      <a href="{% url 'blogs:posts_by_you_only' %}" class="btn btn-md btn-primary">All Blogs/Articles</a><br><br>
+      <a href="{% url 'blogs:posts_pub_by_you_only' %}" class="btn btn-md btn-secondary">Published</a><br><br>
+      <a href="{% url 'blogs:post_draft_list' %}" class="btn btn-md btn-secondary">Drafts</a><hr>
+      <p><b>Foresight-Eritrea</b></p>
+      <a href="{% url 'blogs:post_list' %}" class="btn btn-md btn-primary">Blogs/Articles</a>
+      {% else %}
+        <p><b>NewsBox</b></p>
+        <a href="{% url 'blogs:post_list' %}" class="btn btn-md btn-primary">Blogs/Articles</a>
+      {% endif %}
+    <br>
+    <br>
+  </div>
+  <br>
+{% endblock %}
+
+
+
+{% block group_content %}
+  <div class="col-md-7">
+
+    <br>
+    <form action="{% url 'blogs:blog_search' %}" method="POST">
+        {% csrf_token %}
+        <table border="0" class="col-12">
+            <tr>
+                <td>
+                    <input type="text" name="search" class="form-control col-12 col-lg-12" placeholder="Search for articles by keyword..." value="" required>
+                </td>
+                <td>
+                  .
+                </td>
+                <td>
+                    <input type="submit" value="Search" class="btn btn-primary col-12 col-lg-9">
+                <td>
+            </tr>
+        </table>
+    </form>
+    <br>
+    {% if found %}
+      <center><p><font color="blue">Found {{ found }} result/s</font></p></center>
+    {% endif %}
+    <br>
+{% endblock %}
+
+
+{% block postgroup %}
+  	<div class="list-group">
+      {% if page_obj %}
+        <!-- This if is for all the published newsbox blog posts -->
+        {% for post in page_obj %}
+  		    {% if post.published_date %}
+                  <a class="list-group-item" href="{% url 'blogs:post_detail' pk=post.pk %}">
+                    <h3>{{ post.title }}</h3>
+                    <div class="single-blog-post d-flex style-5 mb-40">
+                      <div class="blog-thumbnail">
+                        <img src="{{ post.blog_cover_image.url }}">
+                      </div>
+                      <p>
+                        Topic: 
+                        {% if post.post_label == "er_hist" %} 
+                          History 
+                        {% elif post.post_label == "er_cult" %} 
+                          Culture 
+                        {% elif post.post_label == "er_peop" %} 
+                          People 
+                        {% elif post.post_label == "er_polt" %} 
+                          Politics 
+                        {% endif %}
+                        <br>
+                        Author: {{post.author}}
+                        <br>
+                        {% if post.created_by == user %}
+                          Posted by: You
+                        {% else %}
+                          Posted by: {{post.created_by.first_name}} {{post.created_by.last_name}}
+                        {% endif %}
+                        <br>
+                        {% if post.published_date %}
+                          Published on: {{ post.published_date|date:"D M Y"}}
+                        {% else %}
+                          <font color="orange">Not Published</font>
+                        {% endif %}
+                      </p>
+                    </div>
+                  </a>
+          {% else %}
+            <!-- This else is for the user's drafts only -->
+            {% if user == post.created_by %}
+              <a class="list-group-item" href="{% url 'blogs:post_detail' pk=post.pk %}">
+                <h3>{{ post.title }}</h3>
+                <div class="single-blog-post d-flex style-5 mb-40">
+                  <div class="blog-thumbnail">
+                    <img src="{{ post.blog_cover_image.url }}">
+                  </div>
+                  <p>
+                    Posted by: You
+                    <br>
+                    Author: {{ post.author }}
+                    <br>
+                    Created on: {{ post.created_date | date }}
+                    <br>
+                    <font color="orange">Not Published</font>
+                  </p>
+                </div>
+              </a>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      <hr>
+      <div class="pagination">
+        <span class="step-links">
+          <span class="current">
+            Page: {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+          </span>
+          {% if page_obj.has_previous %}
+            <a href="?page=1" class="btn btn-sm btn-primary">&laquo; First</a> /
+            <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-sm btn-primary">Previous</a>
+          {% endif %}
+          {% if page_obj.has_previous and page_obj.has_next %}
+            /
+          {% endif %}
+          {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="btn btn-sm btn-primary">Next </a> /
+            <a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-sm btn-primary">Last &raquo;</a>
+          {% endif %}
+        </span>
+      </div>
+    {% endif %}
+
+
+
+    
+
+    {% comment %} ##############  YOU DO NOT NEED THIS AS LONG AS YOU ARE USING CLASS-BASED VIEW IN page_obj CONTEXT  ######################## {% endcomment %}
+    {% comment %} $$$$$$$$$$ your_post WILL BE HANDLED BY ABOVE CODE WHICH IS page_obj $$$$$$$$$$$$$$$ {% endcomment %}
+    
+    {% comment %} {% if your_post %}
+      <!-- This if is for all blog posts made by user only -->
+      <p>All Blogs: <a href="{% url 'home' %}">@{{ user.first_name }}</a></p>
+      {% for post in your_post %}
+        {% if post.created_by == user %}
+          <a class="list-group-item" href="{% url 'blogs:post_detail' pk=post.pk %}">
+            <h3>{{ post.title }}</h3>
+            <div class="single-blog-post d-flex style-5 mb-40">
+              <div class="blog-thumbnail">
+                <img src="{{ post.blog_cover_image.url }}">
+              </div>
+              <p>
+                Posted by: You
+                <br>
+                Author: {{ post.author }}
+                <br>
+                Post created on: {{ post.created_date | date }}
+                <br>
+                {% if post.published_date %}
+                  Published on: {{post.published_date|date:"D M Y"}}
+                {% else %}
+                  <font color="orange">Not Published</font>
+                {% endif %}
+              </p>
+            </div>
+          </a>
+        {% endif %}
+      {% endfor %}
+      <div class="pagination">
+        <span class="step-links">
+          <span class="current">
+            Page: {{ your_post.number }} of {{ your_post.paginator.num_pages }}
+          </span>
+          {% if your_post.has_previous %}
+            <a href="?page=1">&laquo; First</a> /
+            <a href="?page={{ your_post.previous_page_number }}">Previous</a>
+          {% endif %}
+          {% if your_post.has_previous and your_post.has_next %}
+            /
+          {% endif %}
+          {% if page_obj.has_next %}
+            <a href="?page={{ your_post.next_page_number }}">Next </a> /
+            <a href="?page={{ your_post.paginator.num_pages }}">Last &raquo;</a>
+          {% endif %}
+        </span>
+      </div>
+    {% endif %} {% endcomment %}
+
+
+
+
+
+    {% comment %} ##############  YOU DO NOT NEED THIS AS LONG AS YOU ARE USING CLASS-BASED VIEW IN page_obj CONTEXT  ######################## {% endcomment %}
+    {% comment %} $$$$$$$$$$ your_published_post WILL BE HANDLED BY ABOVE CODE WHICH IS page_obj $$$$$$$$$$$$$$$ {% endcomment %}
+    
+    {% comment %} {% if your_published_post %}
+      <!-- This if is only for blog posts published by the user -->
+      <p>Published Blogs: <a href="{% url 'home' %}">@{{ user.first_name }}</a></p>
+      {% for post in your_published_post %}
+        {% if post.created_by == user %}
+          <a class="list-group-item" href="{% url 'blogs:post_detail' pk=post.pk %}">
+            <h3>{{ post.title }}</h3>
+            <div class="single-blog-post d-flex style-5 mb-40">
+              <div class="blog-thumbnail">
+                <img src="{{ post.blog_cover_image.url }}">
+              </div>
+              <p>
+                Posted by: You
+                <br>
+                Author: {{ post.author }}
+                <br>
+                Published on: {{ post.published_date | date:"D M Y" }}
+                <br>
+                Post created on: {{ post.created_date | date }}
+              </p>
+            </div>
+          </a>
+        {% endif %}
+      {% endfor %}
+      <div class="pagination">
+        <span class="step-links">
+          <span class="current">
+            Page: {{ your_published_post.number }} of {{ your_published_post.paginator.num_pages }}
+          </span>
+          {% if your_published_post.has_previous %}
+            <a href="?page=1">&laquo; First</a> /
+            <a href="?page={{ your_published_post.previous_page_number }}">Previous</a>
+          {% endif %}
+          {% if your_published_post.has_previous and your_published_post.has_next %}
+            /
+          {% endif %}
+          {% if page_obj.has_next %}
+            <a href="?page={{ your_published_post.next_page_number }}">Next </a> /
+            <a href="?page={{ your_published_post.paginator.num_pages }}">Last &raquo;</a>
+          {% endif %}
+        </span>
+      </div>
+    {% endif %} {% endcomment %}
+
+
+
+
+
+    {% if blog_search_result %}
+        <!-- This if is for all the published newsbox blog posts -->
+        {% for post in blog_search_result %}
+          {% if post.published_date %}
+                  <a class="list-group-item" href="{% url 'blogs:post_detail' pk=post.pk %}">
+                    <h3>{{ post.title }}</h3>
+                    <div class="single-blog-post d-flex style-5 mb-40">
+                      <div class="blog-thumbnail">
+                        <img src="{{ post.blog_cover_image.url }}">
+                      </div>
+                      <p>
+                        Topic: 
+                        {% if post.post_label == "er_hist" %} 
+                          History 
+                        {% elif post.post_label == "er_cult" %} 
+                          Culture 
+                        {% elif post.post_label == "er_peop" %} 
+                          People 
+                        {% elif post.post_label == "er_polt" %} 
+                          Politics 
+                        {% endif %}
+                        <br>
+                        Author: {{post.author}}
+                        <br>
+                        {% if post.created_by == user %}
+                          Posted by: You
+                        {% else %}
+                          Posted by: {{post.created_by.first_name}} {{post.created_by.last_name}}
+                        {% endif %}
+                        <br>
+                        Published on: {{ post.published_date|date:"D M Y"}}
+                      </p>
+                    </div>
+                  </a>
+          {% endif %}
+        {% endfor %}
+      <hr>
+      <div class="pagination">
+        <span class="step-links">
+          <span class="current">
+            Page: {{ blog_search_result.number }} of {{ blog_search_result.paginator.num_pages }}
+          </span>
+          {% if blog_search_result.has_previous %}
+            <a href="?page=1">&laquo; First</a> /
+            <a href="?page={{ blog_search_result.previous_page_number }}">Previous</a>
+          {% endif %}
+          {% if blog_search_result.has_previous and blog_search_result.has_next %}
+            /
+          {% endif %}
+          {% if blog_search_result.has_next %}
+            <a href="?page={{ blog_search_result.next_page_number }}">Next </a> /
+            <a href="?page={{ blog_search_result.paginator.num_pages }}">Last &raquo;</a>
+          {% endif %}
+        </span>
+      </div>
+    {% endif %}
+
+
+
+
+  	</div>
+  </div>
+{% endblock %}

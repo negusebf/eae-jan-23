@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+  Blog Drafts
+{% endblock %}
+
+
+
+{% block content %}
+<div class="col-md-4">
+  <h2 class="mb-4">Blog Drafts</h2>
+  <!--<p class="mb-4">Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>-->
+  {% if page_obj %}
+    <!-- previously page_obj was post_draft_list -->
+    {% for post in page_obj %}
+      <div class="post">
+          <p class="date">created: {{ post.created_date|date:'d-m-Y' }}</p>
+          <h1><a href="{% url 'blogs:post_detail' pk=post.pk %}">{{ post.title }}</a></h1>
+          <p>{{ post.text|truncatechars:200 }}</p>
+      </div>
+    {% endfor %}
+    <hr>
+    <div class="pagination">
+      <span class="step-links">
+        <span class="current">
+          Group page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}:
+        </span>
+        {% if page_obj.has_previous %}
+          <a href="?page=1">&laquo; First</a> /
+          <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        {% endif %}
+        {% if page_obj.has_previous and page_obj.has_next %}
+          /
+        {% endif %}
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}">Next </a> /
+          <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+        {% endif %}
+      </span>
+    </div>
+  {% else %}
+    <p><font color="red">No posts to display!</font></p>
+  {% endif %}
+  <p><a href="{% url 'blogs:post_list' %}" class="btn btn-primary btn-outline-primary px-4 py-3">View all Blogs</a></p>
+</div>
+{% endblock %}

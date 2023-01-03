@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+
+
+{% block content %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'blog_css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'blog_css/site.css' %}" />
+    <script src="{% static 'js/modernizr-2.6.2.js' %}"></script>
+    <script src="{% static 'js/jquery-1.10.2.js' %}"></script>
+	<script src="{% static 'js/bootstrap.js' %}"></script>
+	<script src="{% static 'js/respond.js' %}"></script>
+
+<div class="hero-area">
+	<!-- Hero Post Slides -->
+    <div class="hero-post-slides owl-carousel">
+        <!-- Single Slide -->
+        <div class="single-slide">
+            <div class="container-fluid">
+				<div class="row">
+					<div class="col-12 col-md-12">
+					   	{% block pregroup %}{% endblock %}
+					    {% block group_content %}{% endblock %}
+					    {% block postgroup %}{% endblock %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}

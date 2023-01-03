@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static %}
+{% load bootstrap4 %}
+
+{% block title %}
+  Confirm Post Removal
+{% endblock %}
+
+
+{% block content %}
+	
+
+
+	<section class="post-news-area section-padding-70-0 mb-70">
+        <div class="container">
+            <div class="row justify-content-center">
+                <!-- Post Details Content Area -->
+                <div class="col-50 col-lg-12">
+                    <div class="post-details-content mb-100">
+                        <div>
+                          <p>
+                            <h3>Are you sure you want to delete the post, "{{ object }}"?</h3>
+                            <br>
+							<h5 class="mb-4">Confirm Post Removal</h5>
+							<!--<p class="mb-4">Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>-->
+							<form action="" method="post">{% csrf_token %}
+							  <input class='btn btn-danger' type="submit" value="Confirm" />
+							</form>
+                          </p>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

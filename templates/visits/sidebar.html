@@ -1,0 +1,18 @@
+{% load ads_tags %}
+{% load static %}
+
+<div class="sidebar-area">
+
+    <!-- Newsletter Widget -->
+
+        <div class="single-widget-area newsletter-widget mb-30">
+            <h4>Subscribe to our newsletter</h4>
+            <form action="{% url 'email_subscription' %}" method="POST">
+                {% csrf_token %}
+                <input type="email" name="sub_email" id="nlemail" placeholder="Your E-mail" required>
+                <button type="submit" class="btn newsbox-btn w-100">Subscribe</button>
+            </form>
+            <p class="mt-30">By subscribing to our newsletter you will be able to receive email notifications of both new and trending video posts to our youtube channel.</p>
+        </div>
+
+</div>

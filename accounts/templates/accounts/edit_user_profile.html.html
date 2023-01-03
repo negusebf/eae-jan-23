@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load bootstrap4 %}
+{% load static %}
+
+{% block title %}
+  Edit Profile
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Edit your Profile</h2>
+    <br>
+    <form method="POST">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <p>Click <a href="{% url 'accounts:change_password' %}">here</a> if you want to change your password</p>
+        <input type="submit" value="Update User" class="btn newsbox-btn m-2">
+    </form>
+</div>
+{% endblock %}

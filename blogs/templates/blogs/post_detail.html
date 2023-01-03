@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  Blog Detail
+{% endblock %}
+
+{% block content %}
+  <!-- ##### Post Details Title Area Start ##### -->
+    <div class="post-details-title-area bg-overlay clearfix" style="background-image: url({{ post.blog_cover_image.url }})">
+        <div class="container-fluid h-100">
+            <div class="row h-100 align-items-center">
+                <div class="col-12 col-lg-8">
+                    <!-- Post Content -->
+                    <div class="post-content">
+                        <p class="tag"><span>{{ post.post_quote }}</span></p>
+                        <p class="post-title">{{ post.title }}</p>
+                        <span class="post-date">{{ post.author | upper }}</span>
+                        <div class="d-flex align-items-center">
+                          {% if post.published_date %}
+                            <span class="post-date mr-30">
+                                {{ post.published_date | date }}
+                            </span>
+                            </div>
+                          {% else %}
+                            <span class="post-date mr-30">
+                                Not Published
+                            </span>
+                          {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ##### Post Details Title Area End ##### -->
+
+    <!-- ##### Post Details Area Start ##### -->
+    <section class="post-news-area section-padding-100-0 mb-70">
+        <div class="container">
+            <div class="row justify-content-center">
+                <!-- Post Details Content Area -->
+                <div class="col-12 col-lg-8">
+                    <div class="post-details-content mb-100">
+                        <div>
+                          <p>
+                            <p class='postcontent'>{{ post.text|safe|linebreaksbr }}</p>
+                            {% if post.published_date %}
+                                <div class="date postdate">
+                                    {{ post.author | upper }}
+                                    <br>
+                                    {{ post.published_date | date }}
+                                </div>
+                            {% else %}
+                                <a href="{% url 'blogs:post_publish' pk=post.pk %}" class="btn btn-primary btn-outline-primary px-4 py-3">Publish</a>
+                            {% endif %}
+                            <br>
+                            <br>
+                            {% if user.is_authenticated and user == post.created_by %}
+                                <a class="btn btn-secondary" href="{% url 'blogs:post_edit' pk=post.pk %}"><span class="glyphicon glyphicon-pencil">Edit Post</span></a>
+                                <a class="btn btn-secondary" href="{% url 'blogs:post_remove' pk=post.pk %}"><span class="glyphicon glyphicon-remove">Remove Post</span></a>
+                            {% endif %}
+                          </p>
+                      </div>
+                      <hr>
+                    </div>
+
+
+                    <!-- Comment Area Start -->
+                    <div class="comment_area clearfix mb-100">
+                        <ol>
+                            <!-- Single Comment Area -->
+                            {% for comment in post.comments.all %}
+                                {% if user.is_authenticated or comment.approved_comments %}
+                                    <li class="single_comment_area">
+                                        <!-- Comment Content -->
+                                        <div class="comment-content d-flex">
+                                            <!-- Comment Author -->
+                                            <!--
+                                            <div class="comment-author">
+                                                <img src="{% static 'img/bg-img/32.jpg' %}" alt="author">
+                                            </div>
+                                            -->
+                                            <!-- Comment Meta -->
+                                            <div class="comment-meta">
+                                                <div class="d-flex">
+                                                    <a href="#">{{ comment.created_by.first_name }} {{ comment.created_by.last_name }}</a>
+                                                </div>
+                                                <p>{{ comment.text|safe|linebreaks }}</p>
+                                                <p>{{ comment.created_date }}</p>
+                                                {% if not comment.approved_comments %}
+                                                    {% if user.is_authenticated and user == comment.created_by %}
+                                                        <a href="{% url 'blogs:comment_remove' pk=comment.pk %}" class="btn"><font color="red">Remove</font></a>
+                                                        <a href="{% url 'blogs:comment_approve' pk=comment.pk %}" class="btn"><font color="blue">Approve</font></a>
+                                                    {% endif %}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ol>
+                        <br>
+                        <a class="btn btn-primary btn-comment" href="{% url 'blogs:add_comment_to_post' pk=post.pk %}">Comment</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ##### Post Details Area End ##### -->
+
+
+{% endblock %}

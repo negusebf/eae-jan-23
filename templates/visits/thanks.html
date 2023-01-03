@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+
+<link rel="stylesheet" type="text/css" href="{% static '/css_taken_from_django_core_admin/css/base.css' %}">
+<div id="container">
+	<div id="content">
+		<ul class="messagelist">
+			{% if message == 1 %}
+				<li class="success">Thanks for successfully subscribing to our newsletter!</li>
+				<br>
+				<hr>
+				<p><h4>Please note that you will receive email notification from foresight-Eritrea from now on. You may need to Unspam us inorder for you to receive emails visibly. You can also unsubscribe at any moment you want by going to settings and then unchecking the option "Receive Newsletter Notifications".</h4></p>
+				{% else %}
+				<li class="error">This email has already been registered to our newsletter subscribers list!</li>
+			{% endif %}
+		</ul>
+	</div>
+</div>
+<br>
+<br>
+<Br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+{% endblock %}

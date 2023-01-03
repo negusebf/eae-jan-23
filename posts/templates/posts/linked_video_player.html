@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load embed_video_tags %}
+{% load static %}
+{% load bootstrap4 %}
+
+{% block title %}
+	{{ linked_video_single.title }}
+{% endblock %}
+
+{% block content %}
+
+	<!-- ##### Intro News Area Start ##### -->
+	<section class="intro-news-area section-padding-100-0 mb-70">
+	    <div class="container">
+	        <div class="row justify-content-center">
+	            <!-- Intro News Tabs Area -->
+	            <div class="col-12 col-lg-9">
+	            	<br>
+	            	<form action="{% url 'posts:video_search' %}" method="POST">
+	            	    {% csrf_token %}
+	            	    <table border="0" class="col-12">
+	            	        <tr>
+	            	            <td>
+	            	                <input type="text" name="search" class="form-control col-12 col-lg-12" placeholder="Search selected source by keyword..." value="" required>
+	            	            </td>
+	            	            <td>
+	            	                <select name="video_type" class="form-control col-12 col-lg-10" required>
+	            	                    <option value="">Select source</option>
+	            	                    <option value="">-----------</option>
+	            	                    <option value="linked">Linked Videos</option>
+	            	                    <option value="local">Local Videos</option>
+	            	                </select>
+	            	            </td>
+	            	            <td>
+	            	                <input type="submit" value="Search" class="btn btn-primary col-12 col-lg-9">
+	            	            <td>
+	            	        </tr>
+	            	    </table>
+	            	</form>
+	            	<br>
+	            	<br>
+	                <div class="intro-news-tab">
+	                	<!-- Intro News Filter -->
+	                	<div class="intro-news-filter d-flex justify-content-between">
+	                	    	{% if linked_video_single %}
+	                	    		<h3>{{ linked_video_single.title }}</h3>
+	                	    	{% endif %}
+	                	    <nav>
+	                	        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+	                	            <a class="nav-item nav-link active" href="{{ linked_video_single_url }}" target="_blank" role="tab" aria-controls="nav-1" aria-selected="true">View from Youtube</a>
+	                	            <a class="nav-item nav-link active" href="{% url 'posts:videos' %}" role="tab" aria-controls="nav-1" aria-selected="true">Videos Home</a>
+	                	        </div>
+	                	    </nav>
+	                	</div>
+
+	                    <div class="tab-content" id="nav-tabContent">
+	                    	{% if linked_video_single %}
+	                    		<iframe width="820" height="470" src="{{ linked_video_single.link }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+						       	<p>{{ linked_video_single.text|safe|linebreaksbr  }}</p>
+						       	{% if user == linked_video_single.author %}
+						       		<form method="POST" action="{% url 'posts:text_editor' linked_video_single.id %}">
+						       			{% csrf_token %}
+						       			<textarea class="editable medium-editor-textarea" name="txt_editor" value="Everything will be fine" required="true"></textarea>
+						       			<span class="glyphicon glyphicon-plus-sign"><input type="submit" value="Edit & Post text" class="btn-primary buttonLabels"></span> 
+						       		</form>
+						       	{% endif %}
+							{% else %}
+								<h3><font color="red">Sorry, this video is unavailable!</font></h3>
+							{% endif %}
+	                    </div>
+	                </div>
+	            </div>
+
+	            <!-- Sidebar Widget -->
+	            <div class="col-12 col-sm-9 col-md-6 col-lg-3">
+	            	<!-- Add Widget -->
+                    <div class="single-widget-area add-widget mb-30">
+                    	<!-- Single News Area -->
+                    	{% if sidebar_related_videos %}
+                    		{% for side_video in sidebar_related_videos %}
+                    			{% if forloop.counter <= 10 %}
+			                    	<div class="single-blog-post style-2 mb-5">
+			                    	    <!-- Blog Thumbnail -->
+			                    	    <div class="blog-thumbnail">
+			                    	        <a href="{% url 'posts:local_video_player' side_video.id %}"><img src="{{ side_video.image.url }}" alt=""></a>
+			                    	    </div>
+
+			                    	    <!-- Blog Content -->
+			                    	    <div class="blog-content">
+                                            <span class="post-date">{{ side_video.published_date|date:"F j, Y" }}</span>
+                                             <a href="{% url 'posts:local_video_player' side_video.id %}" class="post-title video-btn">{{ side_video.title }}</a>
+                                            <a href="{% url 'posts:local_video_player' side_video.id %}" class="post-author video-btn">By {{ side_video.author }}</a>
+                                        </div>
+			                    	</div>
+			            		{% endif %}
+                        	{% endfor %}
+                        {% endif %}
+                    </div>
+	            </div>
+	        </div>
+	    </div>
+	</section>
+	<!-- ##### Intro News Area End ##### -->
+	 <!-- ##### Add Area Start ##### -->
+    <div class="big-add-area mb-100">
+        <div class="container-fluid">
+            {% if bottom_ad %}
+                {% for i in bottom_ad %}
+                    <a href="{{ i.ad_link }}">
+                        <img src="{{ i.ad.url }}" alt="">
+                    </a>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}

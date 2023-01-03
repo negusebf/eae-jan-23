@@ -1,0 +1,486 @@
+{% extends "base.html" %}
+{% load static %}
+{% load embed_video_tags %}
+
+
+{% block title %}
+  {% if user.is_authenticated %}
+    {{user.username.upper}}
+  {% else %}
+    Home
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        {% if msg_edit_pass%}
+            <link rel="stylesheet" type="text/css" href="{% static '/css_taken_from_django_core_admin/css/base.css' %}">
+            <ul class="messagelist">
+                <li class='success'>{{ msg_edit_pass }}</li>
+            </ul>
+        {% endif %}
+
+        {% if messages %}
+            <link rel="stylesheet" type="text/css" href="{% static '/css_taken_from_django_core_admin/css/base.css' %}">
+            <ul class="messagelist">
+                {% for message in messages %}
+                    {% if forloop.last %}
+                        <li class='success'>{{ message }}</li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endif %}
+    {% if result %}
+        <link rel="stylesheet" type="text/css" href="{% static '/css_taken_from_django_core_admin/css/base.css' %}">
+        <ul class="messagelist"><li>{{ result }}</li></ul>
+    {% endif %}
+
+    <!-- ##### Breaking News Area Start ##### -->
+    <section class="breaking-news-area clearfix">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <!-- Breaking News Widget -->
+                    <div class="breaking-news-ticker d-flex flex-wrap align-items-center">
+                        <div class="title">
+                            <h6>Latest Trends</h6>
+                        </div>
+                        <div id="breakingNewsTicker" class="ticker">
+                            <ul>
+                                {% if user.is_authenticated %}
+                                    <li><a href="#">Welcome {{ user.first_name }} {{ user.last_name }}</a></li>
+                                {% else %}
+                                    <li><a href="{% url 'home' %}">Welcome to the Charm of East-Africa, Eritrea.</a></li>
+                                {% endif %}
+                                {% if listings_2 %}
+                                    {% for listing in listings_2 %}
+                                        <li><a href="{% url 'posts:linked_video_player' listing.id %}" target='_newtab'>{{ forloop.counter }}. {{ listing.title }}</a></li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ##### Breaking News Area End ##### -->
+
+    <!-- ##### Hero Area Start ##### -->
+    <div class="hero-area">
+        <!-- Hero Post Slides -->
+        <div class="hero-post-slides owl-carousel">
+
+            <!-- Single Slide -->
+            <div class="single-slide">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12 col-md-9">
+                        <!-- Single Blog Post Area -->
+                        {% if listings_1 %}
+                            {% for list in listings_1 %}
+                                <div class="single-blog-post style-1" data-animation="fadeInUpBig" data-delay="500ms" data-duration="1500ms">
+                                    <!-- Blog Thumbnail -->
+                                    <div class="blog-thumbnail bg-overlay">
+                                        <a href="#"><img src="{{ list.image.url }}" alt=""></a>
+                                    </div>
+
+                                    <!-- Blog Content -->
+                                    <div class="blog-content">
+                                        <span class="post-date">{{ list.published_date|date:"F j, Y" }}</span>
+                                        <a href="{% url 'posts:linked_video_player' list.id %}" target="_blank" class="post-title">{{ list.title }}</a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="col-md-12"><center><p><font color='red'>There are currently no posts under this section of Linked-Videos!</font></p></center></div>
+                        {% endif %}
+                        </div>
+
+                        <!-- Row 1 above, Row 2 below -->
+
+                        <div class="col-12 col-md-3">
+                            {% if listings_2 %}
+                                {% for list in listings_2 %}
+                                    <div class="single-blog-post style-1 mb-30" data-animation="fadeInUpBig" data-delay="300ms" data-duration="1000ms">
+                                        <!-- Blog Thumbnail -->
+                                        <div class="blog-thumbnail bg-overlay">
+                                            <a href="#"><img src="{{ list.image.url }}" alt=""></a>
+                                        </div>
+
+                                        <!-- Blog Content -->
+                                        <div class="blog-content">
+                                            <span class="post-date">{{ list.published_date|date:"F j, Y" }}</span>
+                                            <a href="{% url 'posts:linked_video_player' list.id %}" target="_blank" class="post-title">{{ list.title }}</a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="col-md-12"><center><p><font color='red'>There are currently no posts under this section of Linked-Videos!</font></p></center></div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Single Slide -->
+            <div class="single-slide">
+                <div class="container-fluid">
+                    <div class="row">
+                        <!-- Single Blog Post Area -->
+                        <div class="col-12 col-md-9">
+                        <!-- Single Blog Post Area -->
+                        {% if listings_1 %}
+                            {% for list in listings_1 %}
+                                <div class="single-blog-post style-1" data-animation="fadeInUpBig" data-delay="100ms" data-duration="1000ms">
+                                    <!-- Blog Thumbnail -->
+                                    <div class="blog-thumbnail bg-overlay">
+                                        <a href="#"><img src="{{ list.image.url }}" alt=""></a>
+                                    </div>
+
+                                    <!-- Blog Content -->
+                                    <div class="blog-content">
+                                        <span class="post-date">{{ list.published_date|date:"F j, Y" }}</span>
+                                        <a href="{% url 'posts:linked_video_player' list.id %}" target="_blank" class="post-title">{{ list.title }}</a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="col-md-12"><center><p><font color='red'>There are currently no posts under this section of Linked-Videos!</font></p></center></div>
+                        {% endif %}
+                        </div>
+
+                        <!-- Row 1 above, Row 2 below -->
+
+                        <div class="col-12 col-md-3">
+                            {% if listings_2 %}
+                                {% for list in listings_2 %}
+                                    <div class="single-blog-post style-1 mb-30" data-animation="fadeInUpBig" data-delay="300ms" data-duration="1000ms">
+                                        <!-- Blog Thumbnail -->
+                                        <div class="blog-thumbnail bg-overlay">
+                                            <a href="#"><img src="{{ list.image.url }}" alt=""></a>
+                                        </div>
+
+                                        <!-- Blog Content -->
+                                        <div class="blog-content">
+                                            <span class="post-date">{{ list.published_date|date:"F j, Y" }}</span>
+                                            <a href="{% url 'posts:linked_video_player' list.id %}" target="_blank" class="post-title">{{ list.title }}</a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="col-md-12"><center><p><font color='red'>There are currently no posts under this section of Linked-Videos!</font></p></center></div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- ##### Hero Area End ##### -->
+
+
+
+
+
+
+
+
+    <!-- ##### Intro News Area Start ##### -->
+    <section class="intro-news-area section-padding-100-0 mb-70">
+        <div class="container">
+            <div class="row justify-content-center">
+                <!-- Intro News Tabs Area -->
+                <div class="col-12 col-lg-8">
+                    <div class="intro-news-tab">
+
+                        <!-- Intro News Filter -->
+                        <div class="intro-news-filter d-flex justify-content-between">
+                            <h6>Best of...</h6>
+                            <nav>
+                                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                    <a class="nav-item nav-link active" id="nav1" data-toggle="tab" href="#nav-1" role="tab" aria-controls="nav-1" aria-selected="true">This month</a>
+                                    <a class="nav-item nav-link" id="nav2" data-toggle="tab" href="#nav-2" role="tab" aria-controls="nav-2" aria-selected="false">This year</a>
+                                </div>
+                            </nav>
+                        </div>
+
+                        <div class="tab-content" id="nav-tabContent">
+
+                            <div class="tab-pane fade show active" id="nav-1" role="tabpanel" aria-labelledby="nav1">
+                                <div class="row">
+
+                                    <!-- ROW 2 ABOVE AND ROW 3 BELOW -->
+
+                                    <!-- Single News Area -->
+                                        {% if datetime_filter_month %}
+                                            {% for list in datetime_filter_month %}
+                                                <div class="col-12 col-sm-6">
+                                                    <div class="single-blog-post style-2 mb-5">
+                                                        <!-- Blog Thumbnail -->
+                                                        <div class="blog-thumbnail">
+                                                            <a href="{% url 'posts:linked_video_player' list.id %}" target="_blank"><img src="{{ list.image.url }}" alt=""></a>
+                                                        </div>
+
+                                                        <!-- Blog Content -->
+                                                        <div class="blog-content">
+                                                            <span class="post-date">{{ list.published_date|date:"F j, Y" }}</span>
+                                                            <a href="{% url 'posts:linked_video_player' list.id %}" target="_blank" class="post-title">{{ list.title }}</a>
+                                                            <a href="{% url 'posts:linked_video_player' list.id %}" target="_blank" class="post-author">By {{ list.author }}</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            <div class="col-md-12"><center><p><font color='red'>There are currently no posts under this section! Contents under 
+                                            this display should appear after at least one day from the time of posting.
+                                            </font></p></center></div>
+                                        {% endif %}
+
+                                        <!-- ROW 3 ABOVE AND ROW 4 BELOW -->
+
+
+                                    <!-- Single News Area -->
+                                    {% if datetime_filter_month1 %}
+                                        {% for list in datetime_filter_month1 %}
+                                            <div class="col-12 col-sm-6">
+                                                <div class="single-blog-post d-flex style-4 mb-30">
+                                                    <!-- Blog Thumbnail -->
+                                                    <div class="blog-thumbnail">
+                                                        <a href="{% url 'posts:linked_video_player' list.id %}" target="_blank"><img src="{{ list.image.url }}" alt=""></a>
+                                                    </div>
+
+                                                    <!-- Blog Content -->
+                                                    <div class="blog-content">
+                                                        <span class="post-date">{{ list.published_date|date:"F j, Y" }}</span>
+                                                        <a href="{% url 'posts:linked_video_player' list.id %}" target="_blank" class="post-title">{{ list.title }}</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <div class="col-md-12"><center><p><font color='red'>There are currently no posts under this section! Contents under 
+                                            this display should appear after at least one day from the time of posting.
+                                            </font></p></center>
+                                        </div>
+                                    {% endif %}
+
+
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="nav-2" role="tabpanel" aria-labelledby="nav2">
+                                <div class="row">
+
+                                    <!-- ROW 2 ABOVE AND ROW 3 BELOW -->
+
+                                    <!-- Single News Area -->
+                                        {% if datetime_filter_year %}
+                                            {% for list in datetime_filter_year %}
+                                                <div class="col-12 col-sm-6">
+                                                    <div class="single-blog-post style-2 mb-5">
+                                                        <!-- Blog Thumbnail -->
+                                                        <div class="blog-thumbnail">
+                                                            <a  href="{% url 'posts:linked_video_player' list.id %}" target="_blank"><img src="{{ list.image.url }}" alt=""></a>
+                                                        </div>
+
+                                                        <!-- Blog Content -->
+                                                        <div class="blog-content">
+                                                            <span class="post-date">{{ list.published_date|date:"F j, Y" }}</span>
+                                                            <a href="{% url 'posts:linked_video_player' list.id %}" target="_blank" class="post-title">{{ list.title }}</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            <div class="col-md-12"><center><p><font color='red'>There are currently no posts under this section!</font></p></center></div>
+                                        {% endif %}
+
+                                        <!-- ROW 3 ABOVE AND ROW 4 BELOW -->
+
+
+                                    <!-- Single News Area -->
+                                    {% if datetime_filter_year1 %}
+                                        {% for list in datetime_filter_year1 %}
+                                            <div class="col-12 col-sm-6">
+                                                <div class="single-blog-post d-flex style-4 mb-30">
+                                                    <!-- Blog Thumbnail -->
+                                                    <div class="blog-thumbnail">
+                                                        <a  href="{% url 'posts:linked_video_player' list.id %}" target="_blank"><img src="{{ list.image.url }}" alt=""></a>
+                                                    </div>
+
+                                                    <!-- Blog Content -->
+                                                    <div class="blog-content">
+                                                        <span class="post-date">{{ list.published_date|date:"F j, Y" }}</span>
+                                                        <a href="{% url 'posts:linked_video_player' list.id %}" target="_blank" class="post-title">{{ list.title }}</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <div class="col-md-12"><center><p><font color='red'>There are currently no posts under this section!</font></p></center></div>
+                                    {% endif %}
+
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar Widget -->
+                <div class="col-12 col-sm-9 col-md-6 col-lg-4">
+
+                    {% include "visits/sidebar.html" %}
+
+                    <!-- Add Widget -->
+                    <div class="single-widget-area add-widget mb-30">
+                        {% if side_ad %}
+                            {% for i in side_ad %}
+                                <a href="{{ i.ad_link }}">
+                                    <img src="{{ i.ad.url }}" alt="">
+                                </a>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ##### Intro News Area End ##### -->
+
+    <!-- ##### Video Area Start ##### -->
+    {% if listings_5 and video_listings %}
+        {% for v_list in video_listings %}
+            <section class="video-area bg-img bg-overlay bg-fixed" style="background-image: url({{ v_list.cover_image.url }});">
+                <div class="container">
+                    <div class="row">
+                        <!-- Featured Video Area -->
+                        <div class="col-12">
+                            <div class="featured-video-area d-flex align-items-center justify-content-center">
+                                <div class="video-content text-center">
+                                    <a href="{% url 'about_video' v_list.id %}" class="video-btn"><i class="fa fa-play" aria-hidden="true"></i></a>
+                                    <span class="published-date">{{ v_list.created_at|date:"F j, Y" }}</span>
+                                    <h3 class="video-title">{{ v_list.title }}</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video Slideshow -->
+                <div class="video-slideshow py-5">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12">
+                                <!-- Video Slides -->
+
+                                <!-- ROW 4 ABOVE AND ROW 5 BELOW -->
+
+                                <div class="video-slides owl-carousel">
+                                    <!-- Single News Area -->
+                                    {% if listings_5 %}
+                                        {% for list in listings_5 %}
+                                            <div class="single-blog-post style-3">
+                                                <!-- Blog Thumbnail -->
+                                                <div class="blog-thumbnail">
+                                                    <a href="{% url 'posts:local_video_player' list.id %}" target="_blank"><img src="{{ list.image.url }}" alt=""></a>
+                                                    <a href="{% url 'posts:local_video_player' list.id %}" target="_blank" class="video-btn"><i class="fa fa-play" aria-hidden="true"></i></a>
+                                                </div>
+                                                <!-- Blog Content -->
+                                                <div class="blog-content">
+                                                    <a href="{% url 'posts:local_video_player' list.id %}" target="_blank"><p class="post-title">{{ list.title }}</p></a>
+                                                    <span class="post-date">{{ list.published_date|date:"F j, Y" }}</span>
+                                                    <span class="post-date">{{ list.published_date|date:"F j, Y" }}</span>
+                                                    <p class="post-date">By {{ list.author }}</b></p>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <div class="col-md-12"><center><p><font color='red'>There are currently no posts under this section of Local-Videos!</font></p></center></div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        {% endfor %}
+    {% else %}
+        <div class="col-md-12"><center><p><font color='red'>There are currently no video urls and lists under this section!</font></p></center></div>
+    {% endif %}
+    <!-- ##### Video Area End ##### -->
+
+    <!-- ROW 5 AND VIDEOS ABOVE AND ROW 6 BELOW -->
+
+    <!-- ##### Top News Area Start ##### -->
+    <div class="top-news-area section-padding-100">
+        <div class="container">
+            <h4>NewsBox Blogs and Articles</h4>
+            <br>
+            <br>
+            <div class="row">
+
+                <!-- Single News Area -->
+                {% if listings_6 %}
+                    {% for list in listings_6 %}
+                        {% if list.published_date %}
+                            <div class="col-12 col-sm-6 col-lg-4">
+                                <div class="single-blog-post style-2 mb-5">
+                                    <!-- Blog Thumbnail -->
+                                    <div class="blog-thumbnail">
+                                        <a href="{% url 'blogs:post_detail' list.id %}" target="_blank"><img src="{{ list.blog_cover_image.url }}" alt=""></a>
+                                    </div>
+
+                                    <!-- Blog Content -->
+                                    <div class="blog-content">
+                                        <span>
+                                            {% if list.post_label == "er_hist" %} 
+                                            History 
+                                            {% elif list.post_label == "er_cult" %} 
+                                            Culture 
+                                            {% elif list.post_label == "er_peop" %} 
+                                            People 
+                                            {% elif list.post_label == "er_polt" %} 
+                                            Politics 
+                                            {% endif %}
+                                        </span> 
+                                        <a href="{% url 'blogs:post_detail' list.id %}" target="_blank" class="post-title">{{ list.title }}</a>
+                                        <a href="{% url 'blogs:post_detail' list.id %}" target="_blank" class="post-author">By {{ list.author }}</a>
+                                        <span class="post-date">{{ list.published_date|date:"F j, Y" }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    <div class="col-12">
+                    <div class="load-more-button text-center">
+                        <a href="{% url 'posts:posts' %}" target="_blank" class="btn newsbox-btn">Load More</a>
+                    </div>
+                </div>
+                    {% else %}
+                        <div class="col-md-12"><center><p><font color='red'>There are currently no posts under the Blogs/Articles section!</font></p></center></div>
+                    {% endif %}
+            </div>
+        </div>
+    </div>
+    <!-- ##### Top News Area End ##### -->
+
+    <!-- ##### Add Area Start ##### -->
+    <div class="big-add-area mb-100">
+        <div class="container-fluid">
+            {% if bottom_ad %}
+                {% for i in bottom_ad %}
+                    <a href="{{ i.ad_link }}">
+                        <img src="{{ i.ad.url }}" alt="">
+                    </a>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    
+    
+{% endblock %}

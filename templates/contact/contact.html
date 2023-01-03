@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+  Contact Us
+{% endblock %}
+
+{% block content %}
+    <!-- ##### Contact Area Start ##### -->
+    <section class="contact-area section-padding-100">
+        <div class="container">
+            <h1>Feedback Query</h1>
+            <div class="row justify-content-center">
+                <link rel="stylesheet" type="text/css" href="{% static '/css_taken_from_django_core_admin/css/base.css' %}">
+                <div id="container">
+                    <div id="content">
+                        <ul class="messagelist">
+                            {% if message == 1 %}
+                                <li class="success">Successfully sent your feedback! <p><h4>Thank you for sending us your feedback. By doing so you are helping us improve in our content management system.</h4></p></li>
+                                <br>
+                                {% elif message == 2 %}
+                                <li class="error">This email has been used once. You can not use one email multiple times.</li>
+                            {% endif %}
+                        </ul>
+                        <br>
+                        <br>
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-8">
+                    <div class="contact-content mb-100">
+
+                        
+
+
+                        
+
+                        <!-- Contact Form Area -->
+                        <div class="contact-form-area mb-70">
+                            <h4 class="mb-50">Send us your Feedbacks</h4>
+
+                            <form action="{% url 'feedback_submission' %}" method="POST">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <input type="text" name="full_name" class="form-control" id="name" placeholder="Name">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <input type="email" name="email" class="form-control" id="email" placeholder="E-mail">
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <input type="text" name="subject" class="form-control" id="subject" placeholder="Subject">
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <textarea name="message" name="message" class="form-control" id="message" cols="30" rows="10" placeholder="Message"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <button class="btn newsbox-btn mt-30" type="submit">Send</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- ##### Google Maps ##### -->
+                        <div class="map-area mb-100">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d10125.483443254514!2d38.93592389445206!3d15.325605751799568!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x166df2342d9dced9%3A0xb32379569396dcb2!2sMinistry%20of%20Information%20-%20ERI-TV!5e0!3m2!1sen!2s!4v1607348468420!5m2!1sen!2s" width="600" height="450" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-9 col-md-6 col-lg-4">
+
+                    <!-- Newsletter Widget -->
+
+                    {% if message == 1 or message == 2 %}
+                        <!-- Empty Side bar -->
+                    {% else %}
+                        <!-- Single Contact Info -->
+                        <div class="single-contact-info d-flex align-items-center">
+                            <div class="icon mr-15">
+                                <img src="{% static 'img/core-img/map-pin.png' %}" alt="">
+                            </div>
+                            <p>{{location}}</p>
+                        </div>
+                        <br>
+                        <!-- Single Contact Info -->
+                        <div class="single-contact-info d-flex align-items-center">
+                            <div class="icon mr-15">
+                                <img src="{% static 'img/core-img/smartphone.png' %}" alt="">
+                            </div>
+                            <p>{{phone}}</p>
+                        </div>
+                        <br>
+                        <!-- Single Contact Info -->
+                        <div class="single-contact-info d-flex align-items-center">
+                            <div class="icon mr-15">
+                                <img src="{% static 'img/core-img/paper-plane.png' %}" alt="">
+                            </div>
+                            <p>{{email}}</p>
+                        </div>
+                        <br>
+                        <!-- Single Contact Info -->
+                        <div class="single-contact-info d-flex align-items-center">
+                            <div class="icon mr-15">
+                                <img src="{% static 'img/core-img/archive.png' %}" alt="">
+                            </div>
+                            <p>{{box}}</p>
+                        </div>
+                        <br>
+                        <!-- Contact Social Info -->
+                        <!--
+                        <div class="contact-social-info mt-50 mb-70">
+                            <a href="#" data-toggle="tooltip" data-placement="top" title="Pinterest"><i class="fa fa-pinterest" aria-hidden="true"></i></a>
+                            <a href="#" data-toggle="tooltip" data-placement="top" title="Facebook"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                            <a href="#" data-toggle="tooltip" data-placement="top" title="Twitter"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                            <a href="#" data-toggle="tooltip" data-placement="top" title="Dribbble"><i class="fa fa-dribbble" aria-hidden="true"></i></a>
+                            <a href="#" data-toggle="tooltip" data-placement="top" title="Behance"><i class="fa fa-behance" aria-hidden="true"></i></a>
+                            <a href="#" data-toggle="tooltip" data-placement="top" title="Linkedin"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
+                        </div>
+                        -->
+                    {% endif %}
+                    <br>
+                    <br>
+
+                    {% include 'visits/sidebar.html' %}
+
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ##### Contact Area End ##### -->
+
+    {% endblock %}

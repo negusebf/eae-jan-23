@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+  Photos
+{% endblock %}
+
+
+{% block content %}
+
+    <!-- ##### Top News Area Start ##### -->
+    <div class="top-news-area section-padding-100">
+        <div class="container">
+            <div class="row">
+
+                <!-- Single News Area -->
+                {% if listings_6 %}
+                    {% for list in listings_6 %}
+                        <div class="col-12 col-sm-6 col-lg-4">
+                            <div class="single-blog-post style-2 mb-5">
+                                <!-- Blog Thumbnail -->
+                                <div class="blog-thumbnail">
+                                    <a href="#"><img src="{{ list.image.url }}" alt=""></a>
+                                </div>
+
+                                <!-- Blog Content -->
+                                <div class="blog-content">
+                                    <span class="post-date">{{ list.published_date|date:"F j, Y" }}</span>
+                                    <a href="#" class="post-title">{{ list.title }}</a>
+                                    <a href="#" class="post-author">By {{ list.author }}</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    {% else %}
+                        <h1>No Photos Found!</h1>
+                    {% endif %}
+
+                <div class="col-12">
+                    <div class="load-more-button text-center">
+                        <a href="#" class="btn newsbox-btn">Load More</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- ##### Top News Area End ##### -->
+
+
+    
+    <div class="big-add-area">
+        <div class="container-fluid">
+            <a href="#"><img src="{% static 'img/bg-img/add4.png' %}" alt=""></a>
+        </div>
+    </div>
+    <!-- ##### Add Area End ##### -->
+
+
+{% endblock %}
